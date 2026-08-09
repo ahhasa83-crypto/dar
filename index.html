@@ -1,699 +1,901 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دَار | DAR — اكتشف مكانك القادم</title>
+<title>مِذاق | نظام إدارة المطاعم</title>
+<meta name="description" content="منصة ذكية تساعد المطاعم على إدارة الطلبات والمنيو والمخزون والمبيعات والحجوزات من مكان واحد.">
+
+<!-- Google Fonts: Cairo -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+fontFamily: {
+sans: ['Cairo', 'sans-serif'],
+},
+colors: {
+brand: {
+50: '#fff7ed',
+100: '#ffedd5',
+200: '#fed7aa',
+500: '#f97316',
+600: '#ea580c',
+700: '#c2410c'
+},
+darkbg: '#0b0f19',
+darkcard: '#151c2c',
+darkborder: '#232d42'
+},
+boxShadow: {
+'glow': '0 0 20px -5px rgba(249, 115, 22, 0.3)',
+'card': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+'card-dark': '0 4px 20px -2px rgba(0, 0, 0, 0.3)'
+}
+}
+}
+}
+</script>
+
+<!-- Chart.js for Dashboard Visuals -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
 <style>
-  :root{
-    --dark:#17251F;
-    --secondary:#294238;
-    --gold:#C9A45C;
-    --gold-soft:#E4CFA0;
-    --bg:#F7F5F0;
-    --white:#FFFFFF;
-    --text:#17251F;
-    --muted:#6B756F;
-    --border:#E5E1D8;
-    --success:#3F7D5A;
-    --error:#B84A4A;
-    --nav-h:84px;
-  }
- 
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:'Cairo','IBM Plex Sans Arabic',sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{text-decoration:none;color:inherit;}
-  ul{list-style:none;}
-  img{display:block;max-width:100%;}
-  button{font-family:inherit;cursor:pointer;border:none;background:none;}
-  input,select{font-family:inherit;}
- 
-  .container{max-width:1280px;margin:0 auto;padding:0 32px;}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:13px;letter-spacing:.5px;color:var(--gold);
-    font-weight:600;margin-bottom:14px;
-  }
-  .eyebrow::before{content:"";width:22px;height:1px;background:var(--gold);display:inline-block;}
- 
-  /* ===== Mashrabiya lattice signature pattern ===== */
-  .lattice-strip{
-    height:14px;
-    width:100%;
-    background-image:
-      linear-gradient(45deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%),
-      linear-gradient(-45deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%);
-    background-size:14px 14px;
-    opacity:.55;
-  }
-  .lattice-corner{
-    position:absolute;
-    width:180px;height:180px;
-    opacity:.16;
-    background-image:
-      linear-gradient(45deg, transparent 47%, var(--gold) 47%, var(--gold) 53%, transparent 53%),
-      linear-gradient(-45deg, transparent 47%, var(--gold) 47%, var(--gold) 53%, transparent 53%);
-    background-size:22px 22px;
-    pointer-events:none;
-  }
- 
-  /* ===== Navbar ===== */
-  header{
-    position:sticky;top:0;z-index:100;
-    background:rgba(23,37,31,0.0);
-    transition:background .35s ease, box-shadow .35s ease, padding .35s ease;
-  }
-  header.scrolled{
-    background:rgba(23,37,31,0.97);
-    box-shadow:0 8px 30px rgba(0,0,0,.18);
-  }
-  .nav-inner{
-    display:flex;align-items:center;justify-content:space-between;
-    height:var(--nav-h);
-  }
-  .logo{
-    display:flex;flex-direction:column;line-height:1;
-    color:var(--white);
-  }
-  .logo .ar{font-size:26px;font-weight:800;letter-spacing:1px;}
-  .logo .en{font-size:10px;font-weight:500;letter-spacing:4px;color:var(--gold);margin-top:4px;}
- 
-  nav.main-links{display:flex;gap:36px;}
-  nav.main-links a{
-    color:var(--white);font-size:15px;font-weight:500;
-    position:relative;padding:6px 0;opacity:.88;
-    transition:opacity .2s;
-  }
-  nav.main-links a:hover{opacity:1;}
-  nav.main-links a::after{
-    content:"";position:absolute;bottom:0;right:0;left:auto;
-    width:0;height:2px;background:var(--gold);
-    transition:width .25s ease;
-  }
-  nav.main-links a:hover::after{width:100%;}
- 
-  .nav-actions{display:flex;align-items:center;gap:20px;}
-  .icon-btn{
-    color:var(--white);font-size:19px;display:flex;align-items:center;gap:6px;
-    opacity:.9;
-  }
-  .icon-btn:hover{opacity:1;}
-  .lang-btn{
-    color:var(--white);font-size:13px;font-weight:600;letter-spacing:.5px;
-    border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:30px;
-  }
-  .btn-gold{
-    background:var(--gold);color:var(--dark);
-    padding:12px 26px;border-radius:6px;font-weight:700;font-size:14.5px;
-    transition:background .2s, transform .2s;
-  }
-  .btn-gold:hover{background:var(--gold-soft);transform:translateY(-1px);}
-  .btn-outline{
-    border:1.5px solid var(--gold);color:var(--gold);
-    padding:11px 25px;border-radius:6px;font-weight:700;font-size:14.5px;
-    transition:all .2s;
-  }
-  .btn-outline:hover{background:var(--gold);color:var(--dark);}
- 
-  .hamburger{display:none;flex-direction:column;gap:5px;}
-  .hamburger span{width:26px;height:2px;background:var(--white);border-radius:2px;}
- 
-  /* ===== Hero ===== */
-  .hero{
-    position:relative;
-    min-height:92vh;
-    display:flex;flex-direction:column;justify-content:center;
-    margin-top:calc(-1 * var(--nav-h));
-    padding-top:var(--nav-h);
-    overflow:hidden;
-  }
-  .hero-bg{
-    position:absolute;inset:0;
-    background:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
-  }
-  .hero-overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(23,37,31,.78) 0%, rgba(23,37,31,.55) 45%, rgba(23,37,31,.85) 100%);
-  }
-  .hero-content{
-    position:relative;z-index:2;
-    text-align:center;padding:60px 24px 40px;
-  }
-  .hero-content .eyebrow{color:var(--gold);justify-content:center;}
-  .hero-content .eyebrow::before{display:none;}
-  .hero h1{
-    color:var(--white);
-    font-size:clamp(34px,5.2vw,64px);
-    font-weight:800;line-height:1.25;
-    max-width:900px;margin:0 auto 22px;
-  }
-  .hero p{
-    color:rgba(255,255,255,.85);
-    font-size:clamp(15px,1.6vw,19px);
-    max-width:620px;margin:0 auto 34px;
-  }
-  .hero-btns{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
- 
-  /* ===== Search box ===== */
-  .search-wrap{position:relative;z-index:3;margin-top:44px;padding:0 24px;}
-  .search-box{
-    max-width:1050px;margin:0 auto;
-    background:var(--white);
-    border-radius:16px;
-    box-shadow:0 30px 60px rgba(0,0,0,.28);
-    overflow:hidden;
-  }
-  .search-tabs{display:flex;background:var(--dark);}
-  .search-tabs button{
-    flex:1;padding:16px 10px;color:rgba(255,255,255,.6);
-    font-weight:700;font-size:14.5px;position:relative;transition:color .2s;
-  }
-  .search-tabs button.active{color:var(--gold);background:var(--secondary);}
-  .search-fields{
-    display:grid;grid-template-columns:repeat(5,1fr) auto;
-    gap:0;padding:22px 26px;align-items:end;
-  }
-  .field{display:flex;flex-direction:column;gap:7px;padding:0 14px;border-left:1px solid var(--border);}
-  .field:first-child{padding-right:0;}
-  .field:last-of-type{border-left:none;}
-  .field label{font-size:12px;color:var(--muted);font-weight:600;}
-  .field select,.field input{
-    border:none;font-size:15px;font-weight:600;color:var(--text);
-    background:transparent;padding:4px 0;
-  }
-  .field select:focus,.field input:focus{outline:none;}
-  .search-submit{
-    background:var(--gold);color:var(--dark);
-    border-radius:10px;padding:16px 30px;font-weight:800;font-size:15px;
-    white-space:nowrap;transition:background .2s;
-  }
-  .search-submit:hover{background:var(--gold-soft);}
- 
-  /* ===== Section shell ===== */
-  section{padding:100px 0;}
-  .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
-  .section-head h2{font-size:clamp(26px,3vw,38px);font-weight:800;margin-bottom:14px;}
-  .section-head p{color:var(--muted);font-size:16px;}
- 
-  /* ===== Categories ===== */
-  .cat-grid{
-    display:grid;grid-template-columns:repeat(6,1fr);gap:22px;
-  }
-  .cat-card{
-    background:var(--white);border:1px solid var(--border);
-    border-radius:14px;padding:34px 18px;text-align:center;
-    transition:transform .25s, box-shadow .25s, border-color .25s;
-  }
-  .cat-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(23,37,31,.1);border-color:var(--gold);}
-  .cat-icon{font-size:34px;margin-bottom:14px;}
-  .cat-card h3{font-size:15.5px;font-weight:700;margin-bottom:6px;}
-  .cat-card span{font-size:12.5px;color:var(--muted);}
- 
-  /* ===== Property cards ===== */
-  .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
-  .prop-card{
-    background:var(--white);border-radius:16px;overflow:hidden;
-    border:1px solid var(--border);
-    transition:transform .3s, box-shadow .3s;
-  }
-  .prop-card:hover{transform:translateY(-8px);box-shadow:0 26px 50px rgba(23,37,31,.14);}
-  .prop-media{position:relative;height:230px;overflow:hidden;}
-  .prop-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
-  .prop-card:hover .prop-media img{transform:scale(1.07);}
-  .badge{
-    position:absolute;top:16px;right:16px;
-    background:var(--gold);color:var(--dark);
-    font-size:12px;font-weight:800;padding:6px 14px;border-radius:30px;
-  }
-  .badge.new{background:var(--success);color:var(--white);}
-  .fav-btn{
-    position:absolute;top:16px;left:16px;
-    width:38px;height:38px;border-radius:50%;
-    background:rgba(255,255,255,.9);
-    display:flex;align-items:center;justify-content:center;
-    font-size:17px;color:var(--dark);transition:all .2s;
-  }
-  .fav-btn.active{color:var(--error);}
-  .prop-body{padding:22px;}
-  .prop-price{font-size:21px;font-weight:800;color:var(--secondary);margin-bottom:8px;}
-  .prop-price span{font-size:13px;font-weight:600;color:var(--muted);}
-  .prop-title{font-size:17px;font-weight:700;margin-bottom:6px;}
-  .prop-loc{font-size:13.5px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:6px;}
-  .prop-specs{
-    display:flex;gap:16px;padding-top:16px;border-top:1px solid var(--border);
-    margin-bottom:18px;font-size:13px;color:var(--muted);
-  }
-  .prop-specs b{color:var(--text);font-weight:700;}
-  .prop-cta{
-    display:block;text-align:center;padding:12px;
-    border:1.5px solid var(--dark);border-radius:8px;
-    font-weight:700;font-size:14px;transition:all .2s;
-  }
-  .prop-cta:hover{background:var(--dark);color:var(--white);}
- 
-  .see-all-wrap{text-align:center;margin-top:48px;}
- 
-  /* ===== Cities ===== */
-  .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
-  .city-card{
-    position:relative;border-radius:16px;overflow:hidden;height:280px;
-  }
-  .city-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
-  .city-card:hover img{transform:scale(1.08);}
-  .city-overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(180deg, transparent 40%, rgba(23,37,31,.9) 100%);
-    display:flex;flex-direction:column;justify-content:flex-end;padding:24px;
-  }
-  .city-overlay h3{color:var(--white);font-size:22px;font-weight:800;margin-bottom:4px;}
-  .city-overlay span{color:var(--gold-soft);font-size:13px;font-weight:600;}
- 
-  /* ===== Trust band ===== */
-  .trust-band{background:var(--dark);padding:0;position:relative;overflow:hidden;}
-  .trust-inner{
-    display:grid;grid-template-columns:repeat(4,1fr);
-    padding:70px 0;text-align:center;
-  }
-  .trust-inner div{border-left:1px solid rgba(255,255,255,.12);}
-  .trust-inner div:last-child{border-left:none;}
-  .trust-num{color:var(--gold);font-size:38px;font-weight:800;margin-bottom:8px;}
-  .trust-label{color:rgba(255,255,255,.75);font-size:14px;}
- 
-  /* ===== CTA banner ===== */
-  .cta-banner{
-    background:var(--secondary);
-    border-radius:22px;
-    padding:70px 50px;
-    display:flex;align-items:center;justify-content:space-between;
-    gap:30px;flex-wrap:wrap;
-    position:relative;overflow:hidden;
-  }
-  .cta-banner h2{color:var(--white);font-size:30px;font-weight:800;max-width:480px;}
-  .cta-banner p{color:rgba(255,255,255,.75);margin-top:10px;max-width:480px;}
- 
-  /* ===== Footer ===== */
-  footer{background:var(--dark);color:rgba(255,255,255,.75);padding-top:80px;}
-  .footer-grid{
-    display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:40px;
-    padding-bottom:60px;border-bottom:1px solid rgba(255,255,255,.12);
-  }
-  .footer-grid h4{color:var(--white);font-size:15px;font-weight:700;margin-bottom:20px;}
-  .footer-grid li{margin-bottom:12px;font-size:14px;}
-  .footer-grid li a:hover{color:var(--gold);}
-  .footer-logo .ar{color:var(--white);font-size:24px;font-weight:800;}
-  .footer-logo .en{color:var(--gold);font-size:10px;letter-spacing:4px;font-weight:600;margin-top:4px;display:block;}
-  .footer-grid p.desc{font-size:14px;margin:16px 0 20px;max-width:280px;}
-  .newsletter{display:flex;gap:0;margin-top:10px;border:1px solid rgba(255,255,255,.2);border-radius:8px;overflow:hidden;}
-  .newsletter input{flex:1;background:transparent;border:none;padding:12px 14px;color:var(--white);font-size:13.5px;}
-  .newsletter input::placeholder{color:rgba(255,255,255,.5);}
-  .newsletter button{background:var(--gold);color:var(--dark);padding:0 18px;font-weight:700;font-size:13.5px;}
-  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:26px 0;font-size:13px;color:rgba(255,255,255,.5);flex-wrap:wrap;gap:14px;}
-  .socials{display:flex;gap:14px;}
-  .socials a{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;}
-  .socials a:hover{border-color:var(--gold);color:var(--gold);}
- 
-  /* ===== Mobile ===== */
-  @media(max-width:1024px){
-    .search-fields{grid-template-columns:repeat(3,1fr);}
-    .prop-grid{grid-template-columns:repeat(2,1fr);}
-    .city-grid{grid-template-columns:repeat(2,1fr);}
-    .cat-grid{grid-template-columns:repeat(3,1fr);}
-    .footer-grid{grid-template-columns:1fr 1fr;}
-    .trust-inner{grid-template-columns:repeat(2,1fr);gap:30px 0;}
-  }
-  @media(max-width:768px){
-    nav.main-links,.nav-actions .icon-btn.hide-mobile{display:none;}
-    .hamburger{display:flex;}
-    .container{padding:0 20px;}
-    section{padding:64px 0;}
-    .search-fields{grid-template-columns:1fr 1fr;padding:18px;}
-    .field{border-left:none;border-bottom:1px solid var(--border);padding:12px 0;}
-    .search-submit{grid-column:1/-1;margin-top:8px;}
-    .prop-grid{grid-template-columns:1fr;}
-    .city-grid{grid-template-columns:1fr;}
-    .cat-grid{grid-template-columns:repeat(2,1fr);}
-    .cta-banner{flex-direction:column;text-align:center;padding:44px 26px;}
-    .cta-banner h2, .cta-banner p{max-width:100%;}
-    .footer-grid{grid-template-columns:1fr;gap:34px;}
-  }
- 
-  /* mobile drawer */
-  .drawer{
-    position:fixed;inset:0;background:var(--dark);z-index:200;
-    display:flex;flex-direction:column;padding:26px 26px;
-    transform:translateX(100%);transition:transform .35s ease;
-  }
-  .drawer.open{transform:translateX(0);}
-  .drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;}
-  .drawer a{color:var(--white);font-size:20px;font-weight:700;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.1);}
-  .drawer-close{color:var(--white);font-size:26px;}
- 
-  :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
-  }
+/* Custom Scrollbar & Utilities */
+* { font-family: 'Cairo', sans-serif; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
+.toast-enter { transform: translateY(100%) scale(0.9); opacity: 0; }
+.toast-show { transform: translateY(0) scale(1); opacity: 1; }
+.glass { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(12px); }
+.dark .glass { background: rgba(21, 28, 44, 0.75); backdrop-filter: blur(12px); }
 </style>
 </head>
-<body>
- 
-<header id="siteHeader">
-  <div class="container nav-inner">
-    <a href="#top" class="logo">
-      <span class="ar">دَار</span>
-      <span class="en">D A R</span>
-    </a>
- 
-    <nav class="main-links">
-      <a href="#top">الرئيسية</a>
-      <a href="#properties">العقارات</a>
-      <a href="#properties">للبيع</a>
-      <a href="#properties">للإيجار</a>
-      <a href="#cities">المناطق</a>
-      <a href="#about">عن دَار</a>
-      <a href="#blog">المدونة</a>
-    </nav>
- 
-    <div class="nav-actions">
-      <a href="#" class="icon-btn hide-mobile" id="favToggle">♡ <span>المفضلة</span></a>
-      <a href="#" class="icon-btn hide-mobile">تسجيل الدخول</a>
-      <button class="lang-btn hide-mobile" id="langBtn">EN</button>
-      <a href="#add" class="btn-gold hide-mobile">أضف عقارك</a>
-      <button class="hamburger" id="hamburgerBtn" aria-label="القائمة">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
- 
-<div class="drawer" id="drawer">
-  <div class="drawer-top">
-    <span class="logo"><span class="ar" style="color:#fff">دَار</span></span>
-    <button class="drawer-close" id="drawerClose">✕</button>
-  </div>
-  <a href="#top">الرئيسية</a>
-  <a href="#properties">العقارات</a>
-  <a href="#cities">المناطق</a>
-  <a href="#about">عن دَار</a>
-  <a href="#blog">المدونة</a>
-  <a href="#add" style="color:var(--gold)">أضف عقارك</a>
+<body class="bg-slate-50 text-slate-800 dark:bg-darkbg dark:text-slate-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
+
+<!-- Toast Notifications Container -->
+<div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+<!-- Modal Container -->
+<div id="modal-container" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-950/60 backdrop-blur-md p-4 transition-all">
+<div id="modal-content" class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl shadow-2xl w-full max-w-lg p-6 relative transform transition-all"></div>
 </div>
- 
-<main id="top">
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    <div class="lattice-corner" style="top:100px;right:-40px;"></div>
- 
-    <div class="hero-content">
-      <div class="eyebrow">منصة عقارية سعودية موثوقة</div>
-      <h1>مكانك القادم يبدأ من هنا</h1>
-      <p>اكتشف عقارات مختارة للبيع والإيجار في أفضل المواقع، وابحث عن المنزل الذي يناسب أسلوب حياتك.</p>
-      <div class="hero-btns">
-        <a href="#properties" class="btn-gold">استكشف العقارات</a>
-        <a href="#add" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,.5)">أضف عقارك</a>
-      </div>
-    </div>
- 
-    <div class="search-wrap">
-      <div class="search-box">
-        <div class="search-tabs" role="tablist">
-          <button class="active" data-tab="sale">للبيع</button>
-          <button data-tab="rent">للإيجار</button>
-          <button data-tab="invest">استثمار</button>
-        </div>
-        <div class="search-fields">
-          <div class="field">
-            <label>نوع العقار</label>
-            <select>
-              <option>شقة</option>
-              <option>فيلا</option>
-              <option>تاون هاوس</option>
-              <option>تجاري</option>
-              <option>أرض</option>
-              <option>استراحة</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>الموقع</label>
-            <select>
-              <option>الرياض</option>
-              <option>جدة</option>
-              <option>الدمام</option>
-              <option>الخبر</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>من (ريال)</label>
-            <input type="text" placeholder="السعر الأدنى">
-          </div>
-          <div class="field">
-            <label>إلى (ريال)</label>
-            <input type="text" placeholder="السعر الأعلى">
-          </div>
-          <div class="field">
-            <label>غرف النوم</label>
-            <select>
-              <option>أي عدد</option>
-              <option>1+</option>
-              <option>2+</option>
-              <option>3+</option>
-              <option>4+</option>
-              <option>5+</option>
-            </select>
-          </div>
-          <button class="search-submit">بحث عن عقار</button>
-        </div>
-      </div>
-    </div>
-  </section>
- 
-  <div class="lattice-strip"></div>
- 
-  <!-- Quick categories -->
-  <section id="categories">
-    <div class="container">
-      <div class="section-head">
-        <div class="eyebrow" style="justify-content:center"></div>
-        <h2>ابحث حسب نوع العقار</h2>
-        <p>تصفح مجموعتنا الواسعة من العقارات المصنّفة حسب النوع الذي يناسب احتياجك</p>
-      </div>
-      <div class="cat-grid">
-        <a href="#properties" class="cat-card"><div class="cat-icon">🏢</div><h3>شقق</h3><span>+320 عقار</span></a>
-        <a href="#properties" class="cat-card"><div class="cat-icon">🏡</div><h3>فلل</h3><span>+180 عقار</span></a>
-        <a href="#properties" class="cat-card"><div class="cat-icon">🏘️</div><h3>تاون هاوس</h3><span>+95 عقار</span></a>
-        <a href="#properties" class="cat-card"><div class="cat-icon">🏬</div><h3>تجاري</h3><span>+64 عقار</span></a>
-        <a href="#properties" class="cat-card"><div class="cat-icon">🌳</div><h3>أراضي</h3><span>+140 عقار</span></a>
-        <a href="#properties" class="cat-card"><div class="cat-icon">🏨</div><h3>استراحات</h3><span>+52 عقار</span></a>
-      </div>
-    </div>
-  </section>
- 
-  <!-- Featured Properties -->
-  <section id="properties" style="background:var(--white)">
-    <div class="container">
-      <div class="section-head">
-        <div class="eyebrow" style="justify-content:center"></div>
-        <h2>عقارات مختارة بعناية</h2>
-        <p>مجموعة من العقارات المميزة التي اخترناها لك</p>
-      </div>
- 
-      <div class="prop-grid" id="propGrid"><!-- injected by JS --></div>
- 
-      <div class="see-all-wrap">
-        <a href="#" class="btn-outline">عرض جميع العقارات</a>
-      </div>
-    </div>
-  </section>
- 
-  <!-- Trust band -->
-  <section class="trust-band" style="padding:0">
-    <div class="lattice-corner" style="bottom:-30px;left:-30px;"></div>
-    <div class="container trust-inner">
-      <div><div class="trust-num">+1,200</div><div class="trust-label">عقار متاح</div></div>
-      <div><div class="trust-num">+40</div><div class="trust-label">مدينة وحي</div></div>
-      <div><div class="trust-num">+8,600</div><div class="trust-label">عميل راضٍ</div></div>
-      <div><div class="trust-num">98%</div><div class="trust-label">نسبة رضا العملاء</div></div>
-    </div>
-  </section>
- 
-  <!-- Explore by city -->
-  <section id="cities">
-    <div class="container">
-      <div class="section-head">
-        <h2>اكتشف العقارات في مدينتك</h2>
-        <p>عقارات منتقاة في أبرز المدن السعودية</p>
-      </div>
-      <div class="city-grid">
-        <a href="#properties" class="city-card">
-          <img src="https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=800&auto=format&fit=crop" alt="الرياض">
-          <div class="city-overlay"><h3>الرياض</h3><span>+520 عقار</span></div>
-        </a>
-        <a href="#properties" class="city-card">
-          <img src="https://images.unsplash.com/photo-1600107918175-2b30f9b53a2c?q=80&w=800&auto=format&fit=crop" alt="جدة">
-          <div class="city-overlay"><h3>جدة</h3><span>+310 عقار</span></div>
-        </a>
-        <a href="#properties" class="city-card">
-          <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=800&auto=format&fit=crop" alt="الدمام">
-          <div class="city-overlay"><h3>الدمام</h3><span>+140 عقار</span></div>
-        </a>
-        <a href="#properties" class="city-card">
-          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=800&auto=format&fit=crop" alt="الخبر">
-          <div class="city-overlay"><h3>الخبر</h3><span>+95 عقار</span></div>
-        </a>
-      </div>
-    </div>
-  </section>
- 
-  <!-- CTA -->
-  <section id="add">
-    <div class="container">
-      <div class="cta-banner">
-        <div class="lattice-corner" style="top:-30px;left:-30px;opacity:.1"></div>
-        <div>
-          <h2>لديك عقار؟ أعلن عنه مجانًا مع دَار</h2>
-          <p>انضم إلى آلاف الملّاك والمسوّقين العقاريين، وصِل إلى آلاف الباحثين الجادين عن عقار.</p>
-        </div>
-        <a href="#" class="btn-gold" style="white-space:nowrap">أضف عقارك الآن</a>
-      </div>
-    </div>
-  </section>
-</main>
- 
-<footer id="about">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-logo"><span class="ar">دَار</span><span class="en">D A R</span></div>
-        <p class="desc">منصة عقارية سعودية حديثة تجمع العقارات المعروضة للبيع والإيجار والاستثمار في مكان واحد.</p>
-        <div class="newsletter">
-          <input type="email" placeholder="بريدك الإلكتروني">
-          <button>اشترك</button>
-        </div>
-      </div>
-      <div>
-        <h4>روابط سريعة</h4>
-        <ul>
-          <li><a href="#properties">العقارات</a></li>
-          <li><a href="#cities">المناطق</a></li>
-          <li><a href="#about">عن دَار</a></li>
-          <li><a href="#blog">المدونة</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>الدعم</h4>
-        <ul>
-          <li><a href="#">مركز المساعدة</a></li>
-          <li><a href="#">تواصل معنا</a></li>
-          <li><a href="#">الأسئلة الشائعة</a></li>
-          <li><a href="#">سياسة الخصوصية</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>تواصل معنا</h4>
-        <ul>
-          <li>الرياض، المملكة العربية السعودية</li>
-          <li>info@dar.sa</li>
-          <li>+966 11 000 0000</li>
-        </ul>
-        <div class="socials" style="margin-top:16px">
-          <a href="#">X</a><a href="#">in</a><a href="#">IG</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 دَار DAR. جميع الحقوق محفوظة.</span>
-      <span>اكتشف مكانك القادم</span>
-    </div>
-  </div>
-</footer>
- 
+
+<!-- APP CONTAINER (SPA ROUTER TARGET) -->
+<div id="app" class="flex-1 flex flex-col"></div>
+
+<!-- MAIN SCRIPT STORE & SPA ROUTER -->
 <script>
-  // ---- Property data ----
-  const properties = [
-    {title:"فيلا عصرية بإطلالة مميزة", city:"الرياض، حي الملقا", price:"2,450,000", specs:["4 غرف","5 حمامات","420 م²"], img:"https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
-    {title:"شقة فاخرة بإطلالة المدينة", city:"الرياض، الصحافة", price:"980,000", specs:["3 غرف","3 حمامات","180 م²"], img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=900&auto=format&fit=crop", badge:"جديد", badgeClass:"new"},
-    {title:"تاون هاوس حديث للعائلات", city:"جدة، أبحر", price:"1,650,000", specs:["4 غرف","4 حمامات","280 م²"], img:"https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop", badge:"للبيع"},
-    {title:"شقة راقية بالقرب من البوليفارد", city:"الرياض، حطين", price:"1,250,000", specs:["2 غرف","2 حمامات","145 م²"], img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
-    {title:"أرض سكنية في موقع استثماري", city:"الدمام، الشاطئ", price:"850,000", specs:["600 م²"], img:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=900&auto=format&fit=crop", badge:"استثمار", badgeClass:"new"},
-    {title:"فيلا فاخرة بمسبح خاص", city:"جدة، المحمدية", price:"3,200,000", specs:["5 غرف","7 حمامات","520 م²"], img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
-  ];
- 
-  const grid = document.getElementById('propGrid');
-  grid.innerHTML = properties.map((p,i)=>`
-    <div class="prop-card">
-      <div class="prop-media">
-        <img src="${p.img}" alt="${p.title}">
-        <span class="badge ${p.badgeClass||''}">${p.badge}</span>
-        <button class="fav-btn" data-i="${i}" aria-label="إضافة للمفضلة">♡</button>
-      </div>
-      <div class="prop-body">
-        <div class="prop-price">${p.price} <span>ريال</span></div>
-        <div class="prop-title">${p.title}</div>
-        <div class="prop-loc">📍 ${p.city}</div>
-        <div class="prop-specs">${p.specs.map(s=>`<span><b>${s}</b></span>`).join('')}</div>
-        <a href="#" class="prop-cta">عرض التفاصيل</a>
-      </div>
-    </div>
-  `).join('');
- 
-  // favorite toggle
-  grid.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.fav-btn');
-    if(!btn) return;
-    btn.classList.toggle('active');
-    btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
-  });
- 
-  // navbar scroll state
-  const header = document.getElementById('siteHeader');
-  window.addEventListener('scroll', ()=>{
-    if(window.scrollY > 40){ header.classList.add('scrolled'); }
-    else { header.classList.remove('scrolled'); }
-  });
- 
-  // search tabs
-  document.querySelectorAll('.search-tabs button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.search-tabs button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
- 
-  // mobile drawer
-  const drawer = document.getElementById('drawer');
-  document.getElementById('hamburgerBtn').addEventListener('click', ()=>drawer.classList.add('open'));
-  document.getElementById('drawerClose').addEventListener('click', ()=>drawer.classList.remove('open'));
-  drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>drawer.classList.remove('open')));
- 
-  // language toggle (ar <-> en) — flips layout direction and key labels
-  const langBtn = document.getElementById('langBtn');
-  let isEn = false;
-  const dict = {
-    home:["الرئيسية","Home"], props:["العقارات","Properties"], sale:["للبيع","For Sale"],
-    rent:["للإيجار","For Rent"], areas:["المناطق","Areas"], about:["عن دَار","About DAR"],
-    blog:["المدونة","Blog"], fav:["المفضلة","Favorites"], login:["تسجيل الدخول","Log in"],
-    addProp:["أضف عقارك","List your property"]
-  };
-  langBtn.addEventListener('click', ()=>{
-    isEn = !isEn;
-    document.documentElement.setAttribute('dir', isEn ? 'ltr' : 'rtl');
-    document.documentElement.setAttribute('lang', isEn ? 'en' : 'ar');
-    langBtn.textContent = isEn ? 'AR' : 'EN';
-    const links = document.querySelectorAll('nav.main-links a');
-    const keys = ['home','props','sale','rent','areas','about','blog'];
-    links.forEach((a,i)=>{ a.textContent = dict[keys[i]][isEn?1:0]; });
-  });
+// ==========================================
+// 1. STATE STORE (Local Storage Supported)
+// ==========================================
+const DEFAULT_STATE = {
+theme: localStorage.getItem('theme') || 'light',
+cart: [],
+orders: [
+{ id: "ORD-9021", customer: "فهد العتيبي", items: [{ name: "برجر بريسكت فاخر", qty: 2, price: 45 }], total: 90, status: "Pending", type: "Dine-in", table: 8, time: "10:15 ص", date: "2026-08-09" },
+{ id: "ORD-9020", customer: "سارة الشمري", items: [{ name: "بيتزا مارجريتا نابولي", qty: 1, price: 38 }], total: 38, status: "Preparing", type: "Takeaway", table: null, time: "10:02 ص", date: "2026-08-09" },
+{ id: "ORD-9019", customer: "عبدالله الدوسري", items: [{ name: "سلطة سيزر الدجاج", qty: 2, price: 28 }], total: 56, status: "Ready", type: "Dine-in", table: 3, time: "09:45 ص", date: "2026-08-09" }
+],
+menu: [
+{ id: 1, name: "برجر بريسكت فاخر", category: "الوجبات الرئيسية", price: 45, status: "Active", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop" },
+{ id: 2, name: "بيتزا مارجريتا نابولي", category: "الوجبات الرئيسية", price: 38, status: "Active", image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500&auto=format&fit=crop" },
+{ id: 3, name: "سلطة سيزر الدجاج", category: "المقبلات", price: 28, status: "Active", image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=500&auto=format&fit=crop" },
+{ id: 4, name: "بطاطس ودجز متبلة", category: "المقبلات", price: 16, status: "Active", image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500&auto=format&fit=crop" },
+{ id: 5, name: "عصير برتقال طازج", category: "المشروبات", price: 14, status: "Active", image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop" },
+{ id: 6, name: "تارت الشوكولاتة", category: "الحلويات", price: 22, status: "Active", image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop" }
+],
+tables: [
+{ id: 1, number: 1, capacity: 2, status: "Occupied" },
+{ id: 2, number: 2, capacity: 4, status: "Available" },
+{ id: 3, number: 3, capacity: 4, status: "Occupied" },
+{ id: 4, number: 8, capacity: 6, status: "Reserved" }
+],
+reservations: [
+{ id: "RES-101", name: "أحمد الفهد", phone: "0501234567", guests: 4, table: 8, time: "20:00", date: "2026-08-09", status: "Confirmed" }
+],
+inventory: [
+{ id: 1, name: "لحم بريسكت مجفف", qty: "45 كجم", status: "In Stock" },
+{ id: 2, name: "جبن موزاريلا", qty: "8 كجم", status: "Low Stock" },
+{ id: 3, name: "صلصة طماطم أورجانيك", qty: "30 ليتر", status: "In Stock" }
+],
+employees: [
+{ id: 1, name: "خالد المحمد", role: "شيف رئيسي", shift: "صباحي", status: "On Duty" },
+{ id: 2, name: "محمد صلاح", role: "كاشير", shift: "مسائي", status: "On Duty" }
+],
+branches: [
+{ id: 1, name: "فرع الرياض - Olaya", manager: "سعود بن سلمان", ordersCount: 1420 },
+{ id: 2, name: "فرع جدة - Corniche", manager: "عمر السقاف", ordersCount: 980 }
+]
+};
+
+let state = JSON.parse(localStorage.getItem('mthaq_state')) || DEFAULT_STATE;
+
+function saveState() {
+localStorage.setItem('mthaq_state', JSON.stringify(state));
+}
+
+function toggleDarkMode() {
+state.theme = state.theme === 'light' ? 'dark' : 'light';
+localStorage.setItem('theme', state.theme);
+applyTheme();
+}
+
+function applyTheme() {
+if (state.theme === 'dark') {
+document.documentElement.classList.add('dark');
+} else {
+document.documentElement.classList.remove('dark');
+}
+}
+applyTheme();
+
+// ==========================================
+// 2. UI UTILITIES (Toasts & Modals)
+// ==========================================
+function showToast(message, type = 'success') {
+const container = document.getElementById('toast-container');
+const toast = document.createElement('div');
+const isSuccess = type === 'success';
+toast.className = `glass border ${isSuccess ? 'border-emerald-500/30 text-emerald-600 dark:text-emerald-400' : 'border-rose-500/30 text-rose-600 dark:text-rose-400'} px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-bold transition-all duration-300 toast-enter pointer-events-auto`;
+toast.innerHTML = `<div class="p-1 rounded-lg ${isSuccess ? 'bg-emerald-500/10' : 'bg-rose-500/10'}"><i data-lucide="${isSuccess ? 'check-circle-2' : 'alert-circle'}" class="w-5 h-5"></i></div><span>${message}</span>`;
+container.appendChild(toast);
+lucide.createIcons();
+
+setTimeout(() => toast.classList.add('toast-show'), 10);
+setTimeout(() => {
+toast.classList.remove('toast-show');
+setTimeout(() => toast.remove(), 300);
+}, 3200);
+}
+
+function openModal(contentHtml) {
+const container = document.getElementById('modal-container');
+const content = document.getElementById('modal-content');
+content.innerHTML = contentHtml + `<button onclick="closeModal()" class="absolute top-5 left-5 p-2 rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"><i data-lucide="x" class="w-5 h-5"></i></button>`;
+container.classList.remove('hidden');
+lucide.createIcons();
+}
+
+function closeModal() {
+document.getElementById('modal-container').classList.add('hidden');
+}
+
+// ==========================================
+// 3. ROUTER & PAGES RENDERER
+// ==========================================
+function navigateTo(route) {
+window.location.hash = route;
+}
+
+window.addEventListener('hashchange', router);
+window.addEventListener('load', router);
+
+function router() {
+const path = window.location.hash.replace('#', '') || '/';
+const app = document.getElementById('app');
+
+if (path === '/') renderLanding(app);
+else if (path === '/menu') renderPublicMenu(app);
+else if (path === '/cart') renderCartPage(app);
+else if (path === '/checkout') renderCheckoutPage(app);
+else if (path === '/login') renderLoginPage(app);
+else if (path === '/kitchen') renderKitchenView(app);
+else if (path.startsWith('/dashboard')) renderDashboardLayout(app, path);
+else renderLanding(app);
+
+lucide.createIcons();
+window.scrollTo(0,0);
+}
+
+// ==========================================
+// 4. PUBLIC PAGES (Header, Landing, Menu, Cart)
+// ==========================================
+function getHeaderHtml() {
+const cartCount = state.cart.reduce((a, b) => a + b.qty, 0);
+return `
+<header class="sticky top-0 z-30 glass border-b border-slate-200/60 dark:border-darkborder/60 px-6 py-3.5 flex items-center justify-between transition-all">
+<div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('/')">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 text-white flex items-center justify-center font-black text-xl shadow-glow group-hover:scale-105 transition-transform">مـ</div>
+<span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">مِذاق <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-500/10 text-brand-600 border border-brand-200 dark:border-brand-500/20">SaaS</span></span>
+</div>
+<div class="flex items-center gap-2 sm:gap-4">
+<button onclick="navigateTo('/menu')" class="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-500 transition-colors px-3 py-2 rounded-xl">المنيو الرقمي</button>
+<button onclick="navigateTo('/dashboard')" class="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-500 transition-colors hidden md:block px-3 py-2 rounded-xl">لوحة التحكم</button>
+<button onclick="navigateTo('/kitchen')" class="text-xs sm:text-sm font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 transition-colors hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20">
+<i data-lucide="chef-hat" class="w-4 h-4"></i> المطبخ
+</button>
+
+<button onclick="navigateTo('/cart')" class="relative p-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+<i data-lucide="shopping-bag" class="w-5 h-5 text-slate-700 dark:text-slate-200"></i>
+${cartCount > 0 ? `<span class="absolute -top-1 -right-1 bg-brand-500 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-bounce">${cartCount}</span>` : ''}
+</button>
+
+<button onclick="toggleDarkMode()" class="p-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-slate-700 dark:text-slate-200">
+<i data-lucide="${state.theme === 'dark' ? 'sun' : 'moon'}" class="w-5 h-5"></i>
+</button>
+
+<button onclick="navigateTo('/login')" class="bg-slate-900 hover:bg-slate-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all shadow-md">
+دخول النظام
+</button>
+</div>
+</header>`;
+}
+
+function renderLanding(container) {
+container.innerHTML = `
+${getHeaderHtml()}
+<main class="flex-1 relative overflow-hidden">
+<div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-brand-500/15 blur-[120px] rounded-full pointer-events-none"></div>
+<section class="max-w-6xl mx-auto px-6 py-20 text-center flex flex-col items-center relative z-10">
+<span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20 mb-8 shadow-sm">
+<i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i> الجيل الجديد من برمجيات المطاعم
+</span>
+<h1 class="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white leading-[1.25] mb-8 max-w-4xl tracking-tight">
+منظومة إدارة المطاعم الشاملة <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-brand-600 via-brand-500 to-amber-500">من المنيو الرقمي إلى المطبخ والمبيعات</span>
+</h1>
+<p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-10 leading-relaxed font-normal">
+تتبع كافة عمليات مطعمك لحظة بلحظة، أدِر الطلبات، المخزون، الحجوزات، المبيعات والمنيو من لوحة تحكم سريعة وعصرية بدون تعقيدات.
+</p>
+<div class="flex flex-wrap items-center justify-center gap-4">
+<button onclick="navigateTo('/menu')" class="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white px-8 py-4 rounded-2xl font-bold shadow-glow transition-all flex items-center gap-2 text-base transform hover:-translate-y-0.5">
+<i data-lucide="utensils" class="w-5 h-5"></i> تجربة المنيو والطلب
+</button>
+<button onclick="navigateTo('/dashboard')" class="bg-white dark:bg-darkcard hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-white px-8 py-4 rounded-2xl font-bold border border-slate-200 dark:border-darkborder shadow-card transition-all flex items-center gap-2 text-base">
+<i data-lucide="layout-dashboard" class="w-5 h-5 text-brand-500"></i> استعراض Dashboard
+</button>
+</div>
+</section>
+</main>
+`;
+}
+
+function renderPublicMenu(container) {
+container.innerHTML = `
+${getHeaderHtml()}
+<main class="max-w-6xl mx-auto px-6 py-10 flex-1 w-full">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+<div>
+<h2 class="text-3xl font-black text-slate-900 dark:text-white">قائمة الطعام</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">اختر وجباتك المفضلة وأضفها لسلتك مباشرة</p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+${state.menu.map(item => `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl overflow-hidden shadow-card dark:shadow-card-dark hover:shadow-xl transition-all duration-300 flex flex-col group">
+<div class="relative overflow-hidden h-52">
+<img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+<span class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-xl">${item.category}</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-extrabold text-xl text-slate-900 dark:text-white">${item.name}</h3>
+<span class="text-brand-600 dark:text-brand-500 font-black text-lg bg-brand-50 dark:bg-brand-500/10 px-3 py-1 rounded-xl border border-brand-100 dark:border-brand-500/20">${item.price} <span class="text-xs">ر.س</span></span>
+</div>
+</div>
+<button onclick="addToCart(${item.id})" class="mt-6 w-full bg-slate-900 hover:bg-brand-500 text-white dark:bg-brand-500 dark:hover:bg-brand-600 py-3.5 rounded-2xl font-bold transition-all shadow-md flex items-center justify-center gap-2">
+<i data-lucide="plus" class="w-4 h-4"></i> إضافة للسلة
+</button>
+</div>
+</div>
+`).join('')}
+</div>
+</main>
+`;
+}
+
+function addToCart(productId) {
+const product = state.menu.find(m => m.id === productId);
+const exist = state.cart.find(c => c.id === productId);
+if (exist) {
+exist.qty++;
+} else {
+state.cart.push({ ...product, qty: 1 });
+}
+saveState();
+showToast(`تمت إضافة "${product.name}" إلى السلة`);
+router();
+}
+
+function renderCartPage(container) {
+const total = state.cart.reduce((a, b) => a + (b.price * b.qty), 0);
+container.innerHTML = `
+${getHeaderHtml()}
+<main class="max-w-3xl mx-auto px-6 py-12 flex-1 w-full">
+<h2 class="text-3xl font-black mb-8 flex items-center gap-3">
+<i data-lucide="shopping-bag" class="text-brand-500 w-8 h-8"></i> سلة الشراء
+</h2>
+${state.cart.length === 0 ? `
+<div class="bg-white dark:bg-darkcard p-12 text-center rounded-3xl border border-slate-100 dark:border-darkborder shadow-card">
+<div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+<i data-lucide="shopping-cart" class="w-8 h-8"></i>
+</div>
+<p class="text-slate-500 font-semibold mb-6">السلة فارغة حالياً</p>
+<button onclick="navigateTo('/menu')" class="bg-brand-500 text-white px-6 py-3 rounded-2xl font-bold shadow-glow hover:bg-brand-600 transition">تصفح المنيو</button>
+</div>
+` : `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl p-6 shadow-card dark:shadow-card-dark mb-6">
+<div class="divide-y divide-slate-100 dark:divide-darkborder">
+${state.cart.map(item => `
+<div class="py-4 flex items-center justify-between">
+<div>
+<h4 class="font-bold text-lg">${item.name}</h4>
+<p class="text-slate-500 text-sm mt-0.5">${item.price} ر.س × ${item.qty}</p>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-black text-lg text-brand-600">${item.price * item.qty} ر.س</span>
+<button onclick="removeFromCart(${item.id})" class="p-2.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition">
+<i data-lucide="trash-2" class="w-5 h-5"></i>
+</button>
+</div>
+</div>
+`).join('')}
+</div>
+<div class="border-t border-slate-100 dark:border-darkborder pt-5 mt-4 flex justify-between items-center text-xl font-extrabold">
+<span>المجموع الكلي:</span>
+<span class="text-brand-600">${total} ر.س</span>
+</div>
+</div>
+<button onclick="navigateTo('/checkout')" class="w-full bg-brand-500 hover:bg-brand-600 text-white py-4 rounded-2xl font-black transition flex items-center justify-center gap-2 shadow-glow text-lg">
+متابعة الدفع واكمال الطلب <i data-lucide="arrow-left" class="w-5 h-5"></i>
+</button>
+`}
+</main>
+`;
+}
+
+function removeFromCart(id) {
+state.cart = state.cart.filter(c => c.id !== id);
+saveState();
+router();
+showToast("تم إزالة المنتج من السلة", "error");
+}
+
+function renderCheckoutPage(container) {
+const total = state.cart.reduce((a, b) => a + (b.price * b.qty), 0);
+container.innerHTML = `
+${getHeaderHtml()}
+<main class="max-w-xl mx-auto px-6 py-12 flex-1 w-full">
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl p-8 shadow-card dark:shadow-card-dark">
+<h2 class="text-2xl font-black mb-6">إكمال الطلب</h2>
+<form onsubmit="handleCheckout(event)" class="space-y-5">
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">الاسم الكامل</label>
+<input id="chk-name" required type="text" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-darkborder dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 outline-none font-semibold transition" placeholder="مثال: فهد العتيبي">
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">نوع الطلب</label>
+<select id="chk-type" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-darkborder dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 outline-none font-semibold transition">
+<option value="Dine-in">محلي (الطاولة)</option>
+<option value="Takeaway">سفري / سفري استلام</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">رقم الطاولة (إن وجد)</label>
+<input id="chk-table" type="number" value="8" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-darkborder dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 outline-none font-semibold transition">
+</div>
+<div class="p-5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl flex justify-between font-black text-lg border border-slate-100 dark:border-darkborder">
+<span>المبلغ المطلوب:</span>
+<span class="text-brand-600">${total} ر.س</span>
+</div>
+<button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white py-4 rounded-2xl font-black transition shadow-glow text-base">
+تأكيد وإرسال الطلب
+</button>
+</form>
+</div>
+</main>
+`;
+}
+
+function handleCheckout(e) {
+e.preventDefault();
+const name = document.getElementById('chk-name').value;
+const type = document.getElementById('chk-type').value;
+const table = document.getElementById('chk-table').value;
+const total = state.cart.reduce((a, b) => a + (b.price * b.qty), 0);
+
+const newOrder = {
+id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+customer: name,
+items: [...state.cart],
+total: total,
+status: "Pending",
+type: type,
+table: table ? parseInt(table) : null,
+time: new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' }),
+date: new Date().toISOString().split('T')[0]
+};
+
+state.orders.unshift(newOrder);
+state.cart = [];
+saveState();
+
+openModal(`
+<div class="text-center py-4">
+<div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-5 border border-emerald-200 dark:border-emerald-500/20">
+<i data-lucide="check-circle-2" class="w-10 h-10"></i>
+</div>
+<h3 class="text-2xl font-black mb-2">تم استلام طلبك بنجاح!</h3>
+<p class="text-slate-500 text-sm mb-4">رقم الطلب الخاص بك:</p>
+<div class="text-3xl font-black text-brand-600 tracking-wider bg-slate-100 dark:bg-slate-800 py-3 px-6 rounded-2xl inline-block mb-8 border border-slate-200 dark:border-darkborder">${newOrder.id}</div>
+<div class="flex flex-col sm:flex-row gap-3">
+<button onclick="closeModal(); navigateTo('/dashboard/orders')" class="flex-1 bg-brand-500 text-white py-3 rounded-2xl font-bold shadow-glow">متابعة في Dashboard</button>
+<button onclick="closeModal(); navigateTo('/kitchen')" class="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 py-3 rounded-2xl font-bold">شاشة المطبخ</button>
+</div>
+</div>
+`);
+}
+
+function renderLoginPage(container) {
+container.innerHTML = `
+${getHeaderHtml()}
+<main class="max-w-md mx-auto px-6 py-16 flex-1 w-full">
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl p-8 shadow-card dark:shadow-card-dark">
+<h2 class="text-2xl font-black mb-2 text-center">تسجيل الدخول للنظام</h2>
+<p class="text-slate-500 text-sm text-center mb-8">ادخل بيانات الاعتماد للوصول للإدارة</p>
+<form onsubmit="event.preventDefault(); navigateTo('/dashboard'); showToast('تم تسجيل الدخول بنجاح');" class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">اسم المستخدم / البريد</label>
+<input type="text" value="admin@mthaq.com" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-darkborder dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 outline-none font-semibold">
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">كلمة المرور</label>
+<input type="password" value="••••••••" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:border-darkborder dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 outline-none font-semibold">
+</div>
+<button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white py-3.5 rounded-2xl font-bold transition shadow-glow">دخول</button>
+</form>
+</div>
+</main>
+`;
+}
+
+// ==========================================
+// 5. KITCHEN DISPLAY SYSTEM (KDS)
+// ==========================================
+function renderKitchenView(container) {
+const activeOrders = state.orders.filter(o => o.status !== 'Completed');
+container.innerHTML = `
+<header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center text-white">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-brand-500/10 border border-brand-500/20 rounded-xl text-brand-500">
+<i data-lucide="chef-hat" class="w-6 h-6"></i>
+</div>
+<div>
+<h1 class="text-lg font-black">شاشة المطبخ (Kitchen Display System)</h1>
+<p class="text-xs text-slate-400">متابعة تحضير الطلبات النشطة</p>
+</div>
+</div>
+<button onclick="navigateTo('/dashboard')" class="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700 transition">الرجوع للوحة التحكم</button>
+</header>
+<main class="p-6 flex-1 bg-slate-950 text-slate-100">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+${activeOrders.length === 0 ? `<div class="col-span-full text-center py-24 text-slate-500 font-bold">لا توجد طلبات نشطة حالياً في المطبخ</div>` : ''}
+${activeOrders.map(order => `
+<div class="bg-slate-900 border ${order.status === 'Pending' ? 'border-amber-500/50' : 'border-blue-500/50'} rounded-3xl p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 left-0 h-1.5 ${order.status === 'Pending' ? 'bg-amber-500' : 'bg-blue-500'}"></div>
+<div>
+<div class="flex justify-between items-start mb-4 border-b border-slate-800 pb-4">
+<div>
+<span class="text-2xl font-black text-brand-400 tracking-wider">${order.id}</span>
+<p class="text-xs text-slate-400 mt-1 font-semibold">${order.type} ${order.table ? `- طاولة ${order.table}` : ''}</p>
+</div>
+<span class="text-xs px-3 py-1 rounded-full font-black ${
+order.status === 'Pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+order.status === 'Preparing' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+}">${order.status}</span>
+</div>
+<div class="space-y-3 mb-6">
+${order.items.map(item => `
+<div class="flex justify-between text-sm items-center font-semibold">
+<span class="text-slate-200">${item.name}</span>
+<span class="font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-lg border border-amber-400/20">x${item.qty}</span>
+</div>
+`).join('')}
+</div>
+</div>
+<div class="pt-4 border-t border-slate-800">
+${order.status === 'Pending' ? `
+<button onclick="updateOrderStatus('${order.id}', 'Preparing')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-2xl text-xs font-black transition shadow-lg">بدء التحضير Start Preparing</button>
+` : order.status === 'Preparing' ? `
+<button onclick="updateOrderStatus('${order.id}', 'Ready')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-2xl text-xs font-black transition shadow-lg">جاهز للتقديم Ready</button>
+` : `
+<button onclick="updateOrderStatus('${order.id}', 'Completed')" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-2xl text-xs font-black transition border border-slate-700">إكمال واغلاق Completed</button>
+`}
+</div>
+</div>
+`).join('')}
+</div>
+</main>
+`;
+}
+
+function updateOrderStatus(orderId, status) {
+const order = state.orders.find(o => o.id === orderId);
+if (order) {
+order.status = status;
+saveState();
+showToast(`تم تحديث حالة الطلب ${orderId} إلى ${status}`);
+router();
+}
+}
+
+// ==========================================
+// 6. SAAS DASHBOARD (LAYOUT & SUB-ROUTES)
+// ==========================================
+function renderDashboardLayout(container, currentPath) {
+const sidebarLinks = [
+{ path: '/dashboard', label: 'الرئيسية', icon: 'layout-dashboard' },
+{ path: '/dashboard/orders', label: 'الطلبات', icon: 'shopping-cart' },
+{ path: '/dashboard/kitchen', label: 'المطبخ', icon: 'chef-hat' },
+{ path: '/dashboard/tables', label: 'الطاولات', icon: 'utensils' },
+{ path: '/dashboard/reservations', label: 'الحجوزات', icon: 'calendar' },
+{ path: '/dashboard/menu-management', label: 'إدارة المنيو', icon: 'book-open' },
+{ path: '/dashboard/inventory', label: 'المخزون', icon: 'boxes' },
+{ path: '/dashboard/employees', label: 'الموظفين', icon: 'users' },
+{ path: '/dashboard/customers', label: 'العملاء', icon: 'user-check' },
+{ path: '/dashboard/sales', label: 'المبيعات', icon: 'trending-up' },
+{ path: '/dashboard/expenses', label: 'المصروفات', icon: 'receipt' },
+{ path: '/dashboard/reports', label: 'التقارير', icon: 'bar-chart-3' },
+{ path: '/dashboard/branches', label: 'الفروع', icon: 'git-branch' },
+{ path: '/dashboard/settings', label: 'الإعدادات', icon: 'settings' }
+];
+
+container.innerHTML = `
+<div class="flex min-h-screen">
+<!-- Sidebar -->
+<aside class="w-64 bg-white dark:bg-darkcard border-l border-slate-100 dark:border-darkborder flex flex-col justify-between hidden md:flex shrink-0">
+<div>
+<div class="p-6 border-b border-slate-100 dark:border-darkborder flex items-center gap-3">
+<div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 text-white flex items-center justify-center font-black shadow-glow">مـ</div>
+<span class="font-black text-lg">مِذاق Dashboard</span>
+</div>
+<nav class="p-4 space-y-1">
+${sidebarLinks.map(link => `
+<button onclick="navigateTo('${link.path}')" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+currentPath === link.path ? 'bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-100 dark:border-brand-500/20' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+}">
+<i data-lucide="${link.icon}" class="w-4 h-4"></i>
+<span>${link.label}</span>
+</button>
+`).join('')}
+</nav>
+</div>
+<div class="p-4 border-t border-slate-100 dark:border-darkborder flex items-center justify-between">
+<button onclick="toggleDarkMode()" class="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+<i data-lucide="${state.theme === 'dark' ? 'sun' : 'moon'}" class="w-4 h-4"></i> الوضع الداكن
+</button>
+<button onclick="navigateTo('/')" class="text-xs font-bold text-rose-500 hover:text-rose-600">خروج</button>
+</div>
+</aside>
+
+<!-- Main Dashboard Section -->
+<div class="flex-1 flex flex-col overflow-x-hidden">
+<!-- Top Header -->
+<header class="bg-white dark:bg-darkcard border-b border-slate-100 dark:border-darkborder px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-extrabold text-sm text-slate-800 dark:text-slate-200">فرع الرياض الرئيسي</span>
+</div>
+<div class="flex items-center gap-3">
+<button onclick="navigateTo('/menu')" class="text-xs bg-brand-50 text-brand-600 dark:bg-brand-500/10 px-3.5 py-2 rounded-xl font-bold border border-brand-200 dark:border-brand-500/20 hover:bg-brand-100 transition">معاينة المنيو</button>
+<div class="w-9 h-9 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-xs border border-slate-200 dark:border-darkborder">AD</div>
+</div>
+</header>
+
+<!-- Dashboard Content Dynamic Render -->
+<main class="p-6 flex-1 bg-slate-50 dark:bg-darkbg">
+<div id="dashboard-target"></div>
+</main>
+</div>
+</div>
+`;
+
+const target = document.getElementById('dashboard-target');
+if (currentPath === '/dashboard') renderDashboardHome(target);
+else if (currentPath === '/dashboard/orders') renderDashboardOrders(target);
+else if (currentPath === '/dashboard/kitchen') renderKitchenView(target);
+else if (currentPath === '/dashboard/tables') renderDashboardTables(target);
+else if (currentPath === '/dashboard/reservations') renderDashboardReservations(target);
+else if (currentPath === '/dashboard/menu-management') renderDashboardMenu(target);
+else if (currentPath === '/dashboard/inventory') renderDashboardInventory(target);
+else if (currentPath === '/dashboard/employees') renderDashboardEmployees(target);
+else if (currentPath === '/dashboard/customers') renderDashboardCustomers(target);
+else if (currentPath === '/dashboard/sales') renderDashboardSales(target);
+else if (currentPath === '/dashboard/expenses') renderDashboardExpenses(target);
+else if (currentPath === '/dashboard/reports') renderDashboardReports(target);
+else if (currentPath === '/dashboard/branches') renderDashboardBranches(target);
+else if (currentPath === '/dashboard/settings') renderDashboardSettings(target);
+else renderDashboardHome(target);
+}
+
+// Sub-pages inside Dashboard
+function renderDashboardHome(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card dark:shadow-card-dark">
+<span class="text-slate-500 text-xs font-bold">إجمالي المبيعات اليوم</span>
+<h3 class="text-3xl font-black text-slate-900 dark:text-white mt-2">4,850 <span class="text-sm font-bold text-slate-400">ر.س</span></h3>
+</div>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card dark:shadow-card-dark">
+<span class="text-slate-500 text-xs font-bold">إجمالي الطلبات</span>
+<h3 class="text-3xl font-black text-slate-900 dark:text-white mt-2">${state.orders.length}</h3>
+</div>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card dark:shadow-card-dark">
+<span class="text-slate-500 text-xs font-bold">الطاولات المحجوزة</span>
+<h3 class="text-3xl font-black text-amber-500 mt-2">2 / 4</h3>
+</div>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card dark:shadow-card-dark">
+<span class="text-slate-500 text-xs font-bold">رضا العملاء</span>
+<h3 class="text-3xl font-black text-emerald-500 mt-2">98.4%</h3>
+</div>
+</div>
+
+<!-- Chart Container -->
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card dark:shadow-card-dark">
+<h4 class="font-extrabold mb-4 text-base">تحليلات المبيعات الأسبوعية</h4>
+<canvas id="salesChart" class="max-h-64"></canvas>
+</div>
+</div>
+`;
+
+setTimeout(() => {
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx, {
+type: 'line',
+data: {
+labels: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
+datasets: [{
+label: 'المبيعات (ر.س)',
+data: [3200, 4100, 3800, 5200, 6100, 7500, 4850],
+borderColor: '#f97316',
+borderWidth: 3,
+backgroundColor: 'rgba(249, 115, 22, 0.08)',
+fill: true,
+tension: 0.4
+}]
+},
+options: { responsive: true, plugins: { legend: { display: false } } }
+});
+}, 50);
+}
+
+function renderDashboardOrders(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="text-2xl font-black">إدارة الطلبات</h2>
+</div>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl overflow-hidden shadow-card dark:shadow-card-dark">
+<table class="w-full text-right text-sm">
+<thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-bold">
+<tr>
+<th class="p-4">رقم الطلب</th>
+<th class="p-4">العميل</th>
+<th class="p-4">المبلغ</th>
+<th class="p-4">الحالة</th>
+<th class="p-4">الإجراء</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-darkborder font-semibold">
+${state.orders.map(o => `
+<tr>
+<td class="p-4 font-black text-brand-600">${o.id}</td>
+<td class="p-4">${o.customer}</td>
+<td class="p-4 font-black">${o.total} ر.س</td>
+<td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold ${o.status === 'Pending' ? 'bg-amber-50 text-amber-600 border border-amber-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}">${o.status}</span></td>
+<td class="p-4">
+<button onclick="updateOrderStatus('${o.id}', 'Preparing')" class="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-xl font-bold border border-blue-200 hover:bg-blue-100 transition">بدء التحضير</button>
+</td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+</div>
+</div>
+`;
+}
+
+function renderDashboardTables(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<h2 class="text-2xl font-black">خريطة الطاولات</h2>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+${state.tables.map(t => `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl text-center shadow-card dark:shadow-card-dark">
+<h3 class="text-2xl font-black mb-1">طاولة ${t.number}</h3>
+<p class="text-xs font-bold text-slate-400 mb-4">تتسع لـ ${t.capacity} أشخاص</p>
+<span class="px-3 py-1.5 rounded-full text-xs font-extrabold ${t.status === 'Available' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-rose-50 text-rose-600 border border-rose-200'}">${t.status}</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+
+function renderDashboardReservations(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="text-2xl font-black">إدارة الحجوزات</h2>
+<button onclick="addReservationPrompt()" class="bg-brand-500 text-white px-5 py-2.5 rounded-2xl text-xs font-extrabold shadow-glow hover:bg-brand-600 transition">+ حجز جديد</button>
+</div>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl p-6 shadow-card">
+${state.reservations.map(r => `
+<div class="flex justify-between items-center py-4 border-b border-slate-100 dark:border-darkborder last:border-0 font-semibold">
+<div>
+<h4 class="font-extrabold text-base">${r.name} (${r.guests} ضيوف)</h4>
+<p class="text-xs text-slate-400 mt-0.5">طاولة ${r.table} - الساعة ${r.time}</p>
+</div>
+<span class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold rounded-full">${r.status}</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+
+function addReservationPrompt() {
+openModal(`
+<h3 class="font-black text-xl mb-6">إنشاء حجز جديد</h3>
+<form onsubmit="handleNewReservation(event)" class="space-y-4">
+<input id="res-name" required placeholder="اسم الضيف" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+<input id="res-guests" type="number" required placeholder="عدد الضيوف" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+<button type="submit" class="w-full bg-brand-500 text-white py-3.5 rounded-2xl font-bold shadow-glow">تأكيد الحجز</button>
+</form>
+`);
+}
+
+function handleNewReservation(e) {
+e.preventDefault();
+const name = document.getElementById('res-name').value;
+const guests = document.getElementById('res-guests').value;
+state.reservations.push({ id: `RES-${Math.floor(Math.random()*1000)}`, name, guests, table: 8, time: "21:00", date: "2026-08-09", status: "Confirmed" });
+saveState();
+closeModal();
+showToast("تم إضافة الحجز بنجاح");
+router();
+}
+
+function renderDashboardMenu(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="text-2xl font-black">إدارة قائمة الطعام</h2>
+<button onclick="addProductPrompt()" class="bg-brand-500 text-white px-5 py-2.5 rounded-2xl text-xs font-extrabold shadow-glow hover:bg-brand-600 transition">+ إضافة صنف</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+${state.menu.map(m => `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-5 rounded-3xl flex justify-between items-center shadow-card">
+<div>
+<h4 class="font-extrabold text-base">${m.name}</h4>
+<p class="text-brand-600 font-black text-sm mt-0.5">${m.price} ر.س</p>
+</div>
+<span class="text-xs bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1 rounded-full font-bold">${m.status}</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+
+function addProductPrompt() {
+openModal(`
+<h3 class="font-black text-xl mb-6">إضافة صنف جديد</h3>
+<form onsubmit="handleAddProduct(event)" class="space-y-4">
+<input id="p-name" required placeholder="اسم الوجبة" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+<input id="p-price" type="number" required placeholder="السعر (ر.س)" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+<button type="submit" class="w-full bg-brand-500 text-white py-3.5 rounded-2xl font-bold shadow-glow">إضافة للمنيو</button>
+</form>
+`);
+}
+
+function handleAddProduct(e) {
+e.preventDefault();
+const name = document.getElementById('p-name').value;
+const price = document.getElementById('p-price').value;
+state.menu.push({ id: Date.now(), name, category: "الرئيسية", price: parseFloat(price), status: "Active", image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop" });
+saveState();
+closeModal();
+showToast("تم إضافة الصنف للمنيو");
+router();
+}
+
+function renderDashboardInventory(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<h2 class="text-2xl font-black">المخزون والمواد الخام</h2>
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder rounded-3xl p-6 shadow-card divide-y divide-slate-100 dark:divide-darkborder">
+${state.inventory.map(i => `
+<div class="py-4 flex justify-between items-center font-semibold">
+<div>
+<h4 class="font-extrabold text-base">${i.name}</h4>
+<p class="text-xs text-slate-400 mt-0.5">الكمية المتوفرة: ${i.qty}</p>
+</div>
+<span class="text-xs px-3 py-1 rounded-full font-bold ${i.status === 'In Stock' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}">${i.status}</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+
+function renderDashboardEmployees(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<h2 class="text-2xl font-black">طاقم العمل والورديات</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+${state.employees.map(e => `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-5 rounded-3xl flex justify-between items-center shadow-card">
+<div>
+<h4 class="font-extrabold text-base">${e.name}</h4>
+<p class="text-xs text-slate-400 mt-0.5">${e.role} - وردية ${e.shift}</p>
+</div>
+<span class="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full font-bold">${e.status}</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+
+function renderDashboardCustomers(target) {
+target.innerHTML = `<div class="bg-white dark:bg-darkcard p-8 rounded-3xl border border-slate-100 dark:border-darkborder shadow-card"><h2 class="text-2xl font-black mb-2">قاعدة بيانات العملاء</h2><p class="text-slate-500 font-semibold text-sm">إجمالي العملاء المسجلين: 1,240 عميل نشط.</p></div>`;
+}
+function renderDashboardSales(target) {
+target.innerHTML = `<div class="bg-white dark:bg-darkcard p-8 rounded-3xl border border-slate-100 dark:border-darkborder shadow-card"><h2 class="text-2xl font-black mb-2">سجل المبيعات اليومي</h2><p class="text-slate-500 font-semibold text-sm">إجمالي المبيعات المحققة هذا الشهر: 142,500 ر.س.</p></div>`;
+}
+function renderDashboardExpenses(target) {
+target.innerHTML = `<div class="bg-white dark:bg-darkcard p-8 rounded-3xl border border-slate-100 dark:border-darkborder shadow-card"><h2 class="text-2xl font-black mb-2">إدارة المصروفات التشغيلية</h2><p class="text-slate-500 font-semibold text-sm">مصروفات المشتريات والأجور لهذا الشهر: 38,200 ر.س.</p></div>`;
+}
+function renderDashboardReports(target) {
+target.innerHTML = `<div class="bg-white dark:bg-darkcard p-8 rounded-3xl border border-slate-100 dark:border-darkborder shadow-card"><h2 class="text-2xl font-black mb-2">التقارير التحليلية والمالية</h2><p class="text-slate-500 font-semibold text-sm">تقارير الأداء جاهزة للتصدير بصيغة PDF / Excel.</p></div>`;
+}
+function renderDashboardBranches(target) {
+target.innerHTML = `
+<div class="space-y-6">
+<h2 class="text-2xl font-black">فروع المنظومة</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+${state.branches.map(b => `
+<div class="bg-white dark:bg-darkcard border border-slate-100 dark:border-darkborder p-6 rounded-3xl shadow-card">
+<h3 class="font-extrabold text-xl mb-1">${b.name}</h3>
+<p class="text-xs text-slate-400 font-semibold mb-4">المدير: ${b.manager}</p>
+<span class="text-xs bg-brand-50 text-brand-600 dark:bg-brand-500/10 px-3 py-1.5 rounded-xl font-bold border border-brand-200 dark:border-brand-500/20">${b.ordersCount} طلب منجز</span>
+</div>
+`).join('')}
+</div>
+</div>
+`;
+}
+function renderDashboardSettings(target) {
+target.innerHTML = `
+<div class="bg-white dark:bg-darkcard p-8 rounded-3xl border border-slate-100 dark:border-darkborder shadow-card space-y-6">
+<h2 class="text-2xl font-black">إعدادات النظام</h2>
+<div class="space-y-4 max-w-md">
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">اسم المطعم</label>
+<input type="text" value="مطعم مِذاق الفاخر" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">الرقم الضريبي VAT</label>
+<input type="text" value="310098234100003" class="w-full p-3.5 rounded-2xl border border-slate-200 dark:bg-slate-800 dark:border-darkborder font-semibold">
+</div>
+<button onclick="showToast('تم حفظ الإعدادات بنجاح')" class="bg-brand-500 text-white px-6 py-3.5 rounded-2xl font-bold shadow-glow hover:bg-brand-600 transition">حفظ التغيرات</button>
+</div>
+</div>
+`;
+}
 </script>
- 
 </body>
 </html>
