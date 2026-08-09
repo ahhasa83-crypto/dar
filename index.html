@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دَار | DAR — اكتشف مكانك القادم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark:#17251F;
+    --secondary:#294238;
+    --gold:#C9A45C;
+    --gold-soft:#E4CFA0;
+    --bg:#F7F5F0;
+    --white:#FFFFFF;
+    --text:#17251F;
+    --muted:#6B756F;
+    --border:#E5E1D8;
+    --success:#3F7D5A;
+    --error:#B84A4A;
+    --nav-h:84px;
+  }
+ 
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Cairo','IBM Plex Sans Arabic',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+  img{display:block;max-width:100%;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  input,select{font-family:inherit;}
+ 
+  .container{max-width:1280px;margin:0 auto;padding:0 32px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;letter-spacing:.5px;color:var(--gold);
+    font-weight:600;margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--gold);display:inline-block;}
+ 
+  /* ===== Mashrabiya lattice signature pattern ===== */
+  .lattice-strip{
+    height:14px;
+    width:100%;
+    background-image:
+      linear-gradient(45deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%),
+      linear-gradient(-45deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%);
+    background-size:14px 14px;
+    opacity:.55;
+  }
+  .lattice-corner{
+    position:absolute;
+    width:180px;height:180px;
+    opacity:.16;
+    background-image:
+      linear-gradient(45deg, transparent 47%, var(--gold) 47%, var(--gold) 53%, transparent 53%),
+      linear-gradient(-45deg, transparent 47%, var(--gold) 47%, var(--gold) 53%, transparent 53%);
+    background-size:22px 22px;
+    pointer-events:none;
+  }
+ 
+  /* ===== Navbar ===== */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(23,37,31,0.0);
+    transition:background .35s ease, box-shadow .35s ease, padding .35s ease;
+  }
+  header.scrolled{
+    background:rgba(23,37,31,0.97);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:var(--nav-h);
+  }
+  .logo{
+    display:flex;flex-direction:column;line-height:1;
+    color:var(--white);
+  }
+  .logo .ar{font-size:26px;font-weight:800;letter-spacing:1px;}
+  .logo .en{font-size:10px;font-weight:500;letter-spacing:4px;color:var(--gold);margin-top:4px;}
+ 
+  nav.main-links{display:flex;gap:36px;}
+  nav.main-links a{
+    color:var(--white);font-size:15px;font-weight:500;
+    position:relative;padding:6px 0;opacity:.88;
+    transition:opacity .2s;
+  }
+  nav.main-links a:hover{opacity:1;}
+  nav.main-links a::after{
+    content:"";position:absolute;bottom:0;right:0;left:auto;
+    width:0;height:2px;background:var(--gold);
+    transition:width .25s ease;
+  }
+  nav.main-links a:hover::after{width:100%;}
+ 
+  .nav-actions{display:flex;align-items:center;gap:20px;}
+  .icon-btn{
+    color:var(--white);font-size:19px;display:flex;align-items:center;gap:6px;
+    opacity:.9;
+  }
+  .icon-btn:hover{opacity:1;}
+  .lang-btn{
+    color:var(--white);font-size:13px;font-weight:600;letter-spacing:.5px;
+    border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:30px;
+  }
+  .btn-gold{
+    background:var(--gold);color:var(--dark);
+    padding:12px 26px;border-radius:6px;font-weight:700;font-size:14.5px;
+    transition:background .2s, transform .2s;
+  }
+  .btn-gold:hover{background:var(--gold-soft);transform:translateY(-1px);}
+  .btn-outline{
+    border:1.5px solid var(--gold);color:var(--gold);
+    padding:11px 25px;border-radius:6px;font-weight:700;font-size:14.5px;
+    transition:all .2s;
+  }
+  .btn-outline:hover{background:var(--gold);color:var(--dark);}
+ 
+  .hamburger{display:none;flex-direction:column;gap:5px;}
+  .hamburger span{width:26px;height:2px;background:var(--white);border-radius:2px;}
+ 
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:flex;flex-direction:column;justify-content:center;
+    margin-top:calc(-1 * var(--nav-h));
+    padding-top:var(--nav-h);
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute;inset:0;
+    background:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat;
+  }
+  .hero-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(23,37,31,.78) 0%, rgba(23,37,31,.55) 45%, rgba(23,37,31,.85) 100%);
+  }
+  .hero-content{
+    position:relative;z-index:2;
+    text-align:center;padding:60px 24px 40px;
+  }
+  .hero-content .eyebrow{color:var(--gold);justify-content:center;}
+  .hero-content .eyebrow::before{display:none;}
+  .hero h1{
+    color:var(--white);
+    font-size:clamp(34px,5.2vw,64px);
+    font-weight:800;line-height:1.25;
+    max-width:900px;margin:0 auto 22px;
+  }
+  .hero p{
+    color:rgba(255,255,255,.85);
+    font-size:clamp(15px,1.6vw,19px);
+    max-width:620px;margin:0 auto 34px;
+  }
+  .hero-btns{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
+ 
+  /* ===== Search box ===== */
+  .search-wrap{position:relative;z-index:3;margin-top:44px;padding:0 24px;}
+  .search-box{
+    max-width:1050px;margin:0 auto;
+    background:var(--white);
+    border-radius:16px;
+    box-shadow:0 30px 60px rgba(0,0,0,.28);
+    overflow:hidden;
+  }
+  .search-tabs{display:flex;background:var(--dark);}
+  .search-tabs button{
+    flex:1;padding:16px 10px;color:rgba(255,255,255,.6);
+    font-weight:700;font-size:14.5px;position:relative;transition:color .2s;
+  }
+  .search-tabs button.active{color:var(--gold);background:var(--secondary);}
+  .search-fields{
+    display:grid;grid-template-columns:repeat(5,1fr) auto;
+    gap:0;padding:22px 26px;align-items:end;
+  }
+  .field{display:flex;flex-direction:column;gap:7px;padding:0 14px;border-left:1px solid var(--border);}
+  .field:first-child{padding-right:0;}
+  .field:last-of-type{border-left:none;}
+  .field label{font-size:12px;color:var(--muted);font-weight:600;}
+  .field select,.field input{
+    border:none;font-size:15px;font-weight:600;color:var(--text);
+    background:transparent;padding:4px 0;
+  }
+  .field select:focus,.field input:focus{outline:none;}
+  .search-submit{
+    background:var(--gold);color:var(--dark);
+    border-radius:10px;padding:16px 30px;font-weight:800;font-size:15px;
+    white-space:nowrap;transition:background .2s;
+  }
+  .search-submit:hover{background:var(--gold-soft);}
+ 
+  /* ===== Section shell ===== */
+  section{padding:100px 0;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .section-head h2{font-size:clamp(26px,3vw,38px);font-weight:800;margin-bottom:14px;}
+  .section-head p{color:var(--muted);font-size:16px;}
+ 
+  /* ===== Categories ===== */
+  .cat-grid{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:22px;
+  }
+  .cat-card{
+    background:var(--white);border:1px solid var(--border);
+    border-radius:14px;padding:34px 18px;text-align:center;
+    transition:transform .25s, box-shadow .25s, border-color .25s;
+  }
+  .cat-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(23,37,31,.1);border-color:var(--gold);}
+  .cat-icon{font-size:34px;margin-bottom:14px;}
+  .cat-card h3{font-size:15.5px;font-weight:700;margin-bottom:6px;}
+  .cat-card span{font-size:12.5px;color:var(--muted);}
+ 
+  /* ===== Property cards ===== */
+  .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  .prop-card{
+    background:var(--white);border-radius:16px;overflow:hidden;
+    border:1px solid var(--border);
+    transition:transform .3s, box-shadow .3s;
+  }
+  .prop-card:hover{transform:translateY(-8px);box-shadow:0 26px 50px rgba(23,37,31,.14);}
+  .prop-media{position:relative;height:230px;overflow:hidden;}
+  .prop-media img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .prop-card:hover .prop-media img{transform:scale(1.07);}
+  .badge{
+    position:absolute;top:16px;right:16px;
+    background:var(--gold);color:var(--dark);
+    font-size:12px;font-weight:800;padding:6px 14px;border-radius:30px;
+  }
+  .badge.new{background:var(--success);color:var(--white);}
+  .fav-btn{
+    position:absolute;top:16px;left:16px;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(255,255,255,.9);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;color:var(--dark);transition:all .2s;
+  }
+  .fav-btn.active{color:var(--error);}
+  .prop-body{padding:22px;}
+  .prop-price{font-size:21px;font-weight:800;color:var(--secondary);margin-bottom:8px;}
+  .prop-price span{font-size:13px;font-weight:600;color:var(--muted);}
+  .prop-title{font-size:17px;font-weight:700;margin-bottom:6px;}
+  .prop-loc{font-size:13.5px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:6px;}
+  .prop-specs{
+    display:flex;gap:16px;padding-top:16px;border-top:1px solid var(--border);
+    margin-bottom:18px;font-size:13px;color:var(--muted);
+  }
+  .prop-specs b{color:var(--text);font-weight:700;}
+  .prop-cta{
+    display:block;text-align:center;padding:12px;
+    border:1.5px solid var(--dark);border-radius:8px;
+    font-weight:700;font-size:14px;transition:all .2s;
+  }
+  .prop-cta:hover{background:var(--dark);color:var(--white);}
+ 
+  .see-all-wrap{text-align:center;margin-top:48px;}
+ 
+  /* ===== Cities ===== */
+  .city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  .city-card{
+    position:relative;border-radius:16px;overflow:hidden;height:280px;
+  }
+  .city-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .city-card:hover img{transform:scale(1.08);}
+  .city-overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg, transparent 40%, rgba(23,37,31,.9) 100%);
+    display:flex;flex-direction:column;justify-content:flex-end;padding:24px;
+  }
+  .city-overlay h3{color:var(--white);font-size:22px;font-weight:800;margin-bottom:4px;}
+  .city-overlay span{color:var(--gold-soft);font-size:13px;font-weight:600;}
+ 
+  /* ===== Trust band ===== */
+  .trust-band{background:var(--dark);padding:0;position:relative;overflow:hidden;}
+  .trust-inner{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    padding:70px 0;text-align:center;
+  }
+  .trust-inner div{border-left:1px solid rgba(255,255,255,.12);}
+  .trust-inner div:last-child{border-left:none;}
+  .trust-num{color:var(--gold);font-size:38px;font-weight:800;margin-bottom:8px;}
+  .trust-label{color:rgba(255,255,255,.75);font-size:14px;}
+ 
+  /* ===== CTA banner ===== */
+  .cta-banner{
+    background:var(--secondary);
+    border-radius:22px;
+    padding:70px 50px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:30px;flex-wrap:wrap;
+    position:relative;overflow:hidden;
+  }
+  .cta-banner h2{color:var(--white);font-size:30px;font-weight:800;max-width:480px;}
+  .cta-banner p{color:rgba(255,255,255,.75);margin-top:10px;max-width:480px;}
+ 
+  /* ===== Footer ===== */
+  footer{background:var(--dark);color:rgba(255,255,255,.75);padding-top:80px;}
+  .footer-grid{
+    display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:40px;
+    padding-bottom:60px;border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .footer-grid h4{color:var(--white);font-size:15px;font-weight:700;margin-bottom:20px;}
+  .footer-grid li{margin-bottom:12px;font-size:14px;}
+  .footer-grid li a:hover{color:var(--gold);}
+  .footer-logo .ar{color:var(--white);font-size:24px;font-weight:800;}
+  .footer-logo .en{color:var(--gold);font-size:10px;letter-spacing:4px;font-weight:600;margin-top:4px;display:block;}
+  .footer-grid p.desc{font-size:14px;margin:16px 0 20px;max-width:280px;}
+  .newsletter{display:flex;gap:0;margin-top:10px;border:1px solid rgba(255,255,255,.2);border-radius:8px;overflow:hidden;}
+  .newsletter input{flex:1;background:transparent;border:none;padding:12px 14px;color:var(--white);font-size:13.5px;}
+  .newsletter input::placeholder{color:rgba(255,255,255,.5);}
+  .newsletter button{background:var(--gold);color:var(--dark);padding:0 18px;font-weight:700;font-size:13.5px;}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:26px 0;font-size:13px;color:rgba(255,255,255,.5);flex-wrap:wrap;gap:14px;}
+  .socials{display:flex;gap:14px;}
+  .socials a{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .socials a:hover{border-color:var(--gold);color:var(--gold);}
+ 
+  /* ===== Mobile ===== */
+  @media(max-width:1024px){
+    .search-fields{grid-template-columns:repeat(3,1fr);}
+    .prop-grid{grid-template-columns:repeat(2,1fr);}
+    .city-grid{grid-template-columns:repeat(2,1fr);}
+    .cat-grid{grid-template-columns:repeat(3,1fr);}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .trust-inner{grid-template-columns:repeat(2,1fr);gap:30px 0;}
+  }
+  @media(max-width:768px){
+    nav.main-links,.nav-actions .icon-btn.hide-mobile{display:none;}
+    .hamburger{display:flex;}
+    .container{padding:0 20px;}
+    section{padding:64px 0;}
+    .search-fields{grid-template-columns:1fr 1fr;padding:18px;}
+    .field{border-left:none;border-bottom:1px solid var(--border);padding:12px 0;}
+    .search-submit{grid-column:1/-1;margin-top:8px;}
+    .prop-grid{grid-template-columns:1fr;}
+    .city-grid{grid-template-columns:1fr;}
+    .cat-grid{grid-template-columns:repeat(2,1fr);}
+    .cta-banner{flex-direction:column;text-align:center;padding:44px 26px;}
+    .cta-banner h2, .cta-banner p{max-width:100%;}
+    .footer-grid{grid-template-columns:1fr;gap:34px;}
+  }
+ 
+  /* mobile drawer */
+  .drawer{
+    position:fixed;inset:0;background:var(--dark);z-index:200;
+    display:flex;flex-direction:column;padding:26px 26px;
+    transform:translateX(100%);transition:transform .35s ease;
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;}
+  .drawer a{color:var(--white);font-size:20px;font-weight:700;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+  .drawer-close{color:var(--white);font-size:26px;}
+ 
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+  }
+</style>
+</head>
+<body>
+ 
+<header id="siteHeader">
+  <div class="container nav-inner">
+    <a href="#top" class="logo">
+      <span class="ar">دَار</span>
+      <span class="en">D A R</span>
+    </a>
+ 
+    <nav class="main-links">
+      <a href="#top">الرئيسية</a>
+      <a href="#properties">العقارات</a>
+      <a href="#properties">للبيع</a>
+      <a href="#properties">للإيجار</a>
+      <a href="#cities">المناطق</a>
+      <a href="#about">عن دَار</a>
+      <a href="#blog">المدونة</a>
+    </nav>
+ 
+    <div class="nav-actions">
+      <a href="#" class="icon-btn hide-mobile" id="favToggle">♡ <span>المفضلة</span></a>
+      <a href="#" class="icon-btn hide-mobile">تسجيل الدخول</a>
+      <button class="lang-btn hide-mobile" id="langBtn">EN</button>
+      <a href="#add" class="btn-gold hide-mobile">أضف عقارك</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+ 
+<div class="drawer" id="drawer">
+  <div class="drawer-top">
+    <span class="logo"><span class="ar" style="color:#fff">دَار</span></span>
+    <button class="drawer-close" id="drawerClose">✕</button>
+  </div>
+  <a href="#top">الرئيسية</a>
+  <a href="#properties">العقارات</a>
+  <a href="#cities">المناطق</a>
+  <a href="#about">عن دَار</a>
+  <a href="#blog">المدونة</a>
+  <a href="#add" style="color:var(--gold)">أضف عقارك</a>
+</div>
+ 
+<main id="top">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="lattice-corner" style="top:100px;right:-40px;"></div>
+ 
+    <div class="hero-content">
+      <div class="eyebrow">منصة عقارية سعودية موثوقة</div>
+      <h1>مكانك القادم يبدأ من هنا</h1>
+      <p>اكتشف عقارات مختارة للبيع والإيجار في أفضل المواقع، وابحث عن المنزل الذي يناسب أسلوب حياتك.</p>
+      <div class="hero-btns">
+        <a href="#properties" class="btn-gold">استكشف العقارات</a>
+        <a href="#add" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,.5)">أضف عقارك</a>
+      </div>
+    </div>
+ 
+    <div class="search-wrap">
+      <div class="search-box">
+        <div class="search-tabs" role="tablist">
+          <button class="active" data-tab="sale">للبيع</button>
+          <button data-tab="rent">للإيجار</button>
+          <button data-tab="invest">استثمار</button>
+        </div>
+        <div class="search-fields">
+          <div class="field">
+            <label>نوع العقار</label>
+            <select>
+              <option>شقة</option>
+              <option>فيلا</option>
+              <option>تاون هاوس</option>
+              <option>تجاري</option>
+              <option>أرض</option>
+              <option>استراحة</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>الموقع</label>
+            <select>
+              <option>الرياض</option>
+              <option>جدة</option>
+              <option>الدمام</option>
+              <option>الخبر</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>من (ريال)</label>
+            <input type="text" placeholder="السعر الأدنى">
+          </div>
+          <div class="field">
+            <label>إلى (ريال)</label>
+            <input type="text" placeholder="السعر الأعلى">
+          </div>
+          <div class="field">
+            <label>غرف النوم</label>
+            <select>
+              <option>أي عدد</option>
+              <option>1+</option>
+              <option>2+</option>
+              <option>3+</option>
+              <option>4+</option>
+              <option>5+</option>
+            </select>
+          </div>
+          <button class="search-submit">بحث عن عقار</button>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <div class="lattice-strip"></div>
+ 
+  <!-- Quick categories -->
+  <section id="categories">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow" style="justify-content:center"></div>
+        <h2>ابحث حسب نوع العقار</h2>
+        <p>تصفح مجموعتنا الواسعة من العقارات المصنّفة حسب النوع الذي يناسب احتياجك</p>
+      </div>
+      <div class="cat-grid">
+        <a href="#properties" class="cat-card"><div class="cat-icon">🏢</div><h3>شقق</h3><span>+320 عقار</span></a>
+        <a href="#properties" class="cat-card"><div class="cat-icon">🏡</div><h3>فلل</h3><span>+180 عقار</span></a>
+        <a href="#properties" class="cat-card"><div class="cat-icon">🏘️</div><h3>تاون هاوس</h3><span>+95 عقار</span></a>
+        <a href="#properties" class="cat-card"><div class="cat-icon">🏬</div><h3>تجاري</h3><span>+64 عقار</span></a>
+        <a href="#properties" class="cat-card"><div class="cat-icon">🌳</div><h3>أراضي</h3><span>+140 عقار</span></a>
+        <a href="#properties" class="cat-card"><div class="cat-icon">🏨</div><h3>استراحات</h3><span>+52 عقار</span></a>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Featured Properties -->
+  <section id="properties" style="background:var(--white)">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow" style="justify-content:center"></div>
+        <h2>عقارات مختارة بعناية</h2>
+        <p>مجموعة من العقارات المميزة التي اخترناها لك</p>
+      </div>
+ 
+      <div class="prop-grid" id="propGrid"><!-- injected by JS --></div>
+ 
+      <div class="see-all-wrap">
+        <a href="#" class="btn-outline">عرض جميع العقارات</a>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Trust band -->
+  <section class="trust-band" style="padding:0">
+    <div class="lattice-corner" style="bottom:-30px;left:-30px;"></div>
+    <div class="container trust-inner">
+      <div><div class="trust-num">+1,200</div><div class="trust-label">عقار متاح</div></div>
+      <div><div class="trust-num">+40</div><div class="trust-label">مدينة وحي</div></div>
+      <div><div class="trust-num">+8,600</div><div class="trust-label">عميل راضٍ</div></div>
+      <div><div class="trust-num">98%</div><div class="trust-label">نسبة رضا العملاء</div></div>
+    </div>
+  </section>
+ 
+  <!-- Explore by city -->
+  <section id="cities">
+    <div class="container">
+      <div class="section-head">
+        <h2>اكتشف العقارات في مدينتك</h2>
+        <p>عقارات منتقاة في أبرز المدن السعودية</p>
+      </div>
+      <div class="city-grid">
+        <a href="#properties" class="city-card">
+          <img src="https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?q=80&w=800&auto=format&fit=crop" alt="الرياض">
+          <div class="city-overlay"><h3>الرياض</h3><span>+520 عقار</span></div>
+        </a>
+        <a href="#properties" class="city-card">
+          <img src="https://images.unsplash.com/photo-1600107918175-2b30f9b53a2c?q=80&w=800&auto=format&fit=crop" alt="جدة">
+          <div class="city-overlay"><h3>جدة</h3><span>+310 عقار</span></div>
+        </a>
+        <a href="#properties" class="city-card">
+          <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=800&auto=format&fit=crop" alt="الدمام">
+          <div class="city-overlay"><h3>الدمام</h3><span>+140 عقار</span></div>
+        </a>
+        <a href="#properties" class="city-card">
+          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?q=80&w=800&auto=format&fit=crop" alt="الخبر">
+          <div class="city-overlay"><h3>الخبر</h3><span>+95 عقار</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CTA -->
+  <section id="add">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="lattice-corner" style="top:-30px;left:-30px;opacity:.1"></div>
+        <div>
+          <h2>لديك عقار؟ أعلن عنه مجانًا مع دَار</h2>
+          <p>انضم إلى آلاف الملّاك والمسوّقين العقاريين، وصِل إلى آلاف الباحثين الجادين عن عقار.</p>
+        </div>
+        <a href="#" class="btn-gold" style="white-space:nowrap">أضف عقارك الآن</a>
+      </div>
+    </div>
+  </section>
+</main>
+ 
+<footer id="about">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><span class="ar">دَار</span><span class="en">D A R</span></div>
+        <p class="desc">منصة عقارية سعودية حديثة تجمع العقارات المعروضة للبيع والإيجار والاستثمار في مكان واحد.</p>
+        <div class="newsletter">
+          <input type="email" placeholder="بريدك الإلكتروني">
+          <button>اشترك</button>
+        </div>
+      </div>
+      <div>
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a href="#properties">العقارات</a></li>
+          <li><a href="#cities">المناطق</a></li>
+          <li><a href="#about">عن دَار</a></li>
+          <li><a href="#blog">المدونة</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>الدعم</h4>
+        <ul>
+          <li><a href="#">مركز المساعدة</a></li>
+          <li><a href="#">تواصل معنا</a></li>
+          <li><a href="#">الأسئلة الشائعة</a></li>
+          <li><a href="#">سياسة الخصوصية</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>تواصل معنا</h4>
+        <ul>
+          <li>الرياض، المملكة العربية السعودية</li>
+          <li>info@dar.sa</li>
+          <li>+966 11 000 0000</li>
+        </ul>
+        <div class="socials" style="margin-top:16px">
+          <a href="#">X</a><a href="#">in</a><a href="#">IG</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 دَار DAR. جميع الحقوق محفوظة.</span>
+      <span>اكتشف مكانك القادم</span>
+    </div>
+  </div>
+</footer>
+ 
+<script>
+  // ---- Property data ----
+  const properties = [
+    {title:"فيلا عصرية بإطلالة مميزة", city:"الرياض، حي الملقا", price:"2,450,000", specs:["4 غرف","5 حمامات","420 م²"], img:"https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
+    {title:"شقة فاخرة بإطلالة المدينة", city:"الرياض، الصحافة", price:"980,000", specs:["3 غرف","3 حمامات","180 م²"], img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=900&auto=format&fit=crop", badge:"جديد", badgeClass:"new"},
+    {title:"تاون هاوس حديث للعائلات", city:"جدة، أبحر", price:"1,650,000", specs:["4 غرف","4 حمامات","280 م²"], img:"https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop", badge:"للبيع"},
+    {title:"شقة راقية بالقرب من البوليفارد", city:"الرياض، حطين", price:"1,250,000", specs:["2 غرف","2 حمامات","145 م²"], img:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
+    {title:"أرض سكنية في موقع استثماري", city:"الدمام، الشاطئ", price:"850,000", specs:["600 م²"], img:"https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=900&auto=format&fit=crop", badge:"استثمار", badgeClass:"new"},
+    {title:"فيلا فاخرة بمسبح خاص", city:"جدة، المحمدية", price:"3,200,000", specs:["5 غرف","7 حمامات","520 م²"], img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=900&auto=format&fit=crop", badge:"مميز"},
+  ];
+ 
+  const grid = document.getElementById('propGrid');
+  grid.innerHTML = properties.map((p,i)=>`
+    <div class="prop-card">
+      <div class="prop-media">
+        <img src="${p.img}" alt="${p.title}">
+        <span class="badge ${p.badgeClass||''}">${p.badge}</span>
+        <button class="fav-btn" data-i="${i}" aria-label="إضافة للمفضلة">♡</button>
+      </div>
+      <div class="prop-body">
+        <div class="prop-price">${p.price} <span>ريال</span></div>
+        <div class="prop-title">${p.title}</div>
+        <div class="prop-loc">📍 ${p.city}</div>
+        <div class="prop-specs">${p.specs.map(s=>`<span><b>${s}</b></span>`).join('')}</div>
+        <a href="#" class="prop-cta">عرض التفاصيل</a>
+      </div>
+    </div>
+  `).join('');
+ 
+  // favorite toggle
+  grid.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.fav-btn');
+    if(!btn) return;
+    btn.classList.toggle('active');
+    btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
+  });
+ 
+  // navbar scroll state
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 40){ header.classList.add('scrolled'); }
+    else { header.classList.remove('scrolled'); }
+  });
+ 
+  // search tabs
+  document.querySelectorAll('.search-tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.search-tabs button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+ 
+  // mobile drawer
+  const drawer = document.getElementById('drawer');
+  document.getElementById('hamburgerBtn').addEventListener('click', ()=>drawer.classList.add('open'));
+  document.getElementById('drawerClose').addEventListener('click', ()=>drawer.classList.remove('open'));
+  drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>drawer.classList.remove('open')));
+ 
+  // language toggle (ar <-> en) — flips layout direction and key labels
+  const langBtn = document.getElementById('langBtn');
+  let isEn = false;
+  const dict = {
+    home:["الرئيسية","Home"], props:["العقارات","Properties"], sale:["للبيع","For Sale"],
+    rent:["للإيجار","For Rent"], areas:["المناطق","Areas"], about:["عن دَار","About DAR"],
+    blog:["المدونة","Blog"], fav:["المفضلة","Favorites"], login:["تسجيل الدخول","Log in"],
+    addProp:["أضف عقارك","List your property"]
+  };
+  langBtn.addEventListener('click', ()=>{
+    isEn = !isEn;
+    document.documentElement.setAttribute('dir', isEn ? 'ltr' : 'rtl');
+    document.documentElement.setAttribute('lang', isEn ? 'en' : 'ar');
+    langBtn.textContent = isEn ? 'AR' : 'EN';
+    const links = document.querySelectorAll('nav.main-links a');
+    const keys = ['home','props','sale','rent','areas','about','blog'];
+    links.forEach((a,i)=>{ a.textContent = dict[keys[i]][isEn?1:0]; });
+  });
+</script>
+ 
+</body>
+</html>
